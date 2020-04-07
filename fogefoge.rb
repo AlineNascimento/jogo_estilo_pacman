@@ -6,8 +6,26 @@ def le_mapa(numero)
     mapa = texto.split "\n"
 end
 
+def encontra_jogador mapa
+    caractere_heroi = "H"
+    for linha in o..(mapa.size -1)
+        linha_atual = mapa[linha]
+        for coluna in 0..(linha_atual.size-1)
+            heroi_esta_aqui = linha_atual[coluna] == caractere_heroi
+            if heroi_esta_aqui
+
+            end
+        end
+    end
+end
+
 def joga(nome)
     mapa =  le_mapa 1
+
+    while true
+        desenha mapa
+        direcao = pede_movimento
+    end
     #jogo aqui
 end
 
