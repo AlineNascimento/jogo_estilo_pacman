@@ -6,14 +6,16 @@ def le_mapa(numero)
     mapa = texto.split "\n"
 end
 
-def posicao_valida? nova_posicao, mapa
-    if nova_posicao[0] < 0 || nova_posicao[0] >= mapa.size
+def posicao_valida? mapa, posicao
+    linhas = mapa.size
+    colunas = mapa[0].size
+    estorou_linhas = posicao[0] < 0 || posicao[0] >= linhas
+    estorou_colunas = posicao[1] < 0 || posicao[1] >= colunas
+
+    if estorou_linhas || estorou_colunas
         false
     end
-    if nova_posicao[1] < 0 || nova_posicao[1] >= mapa[0].size
-        false
-    end
-    if mapa[nova_posicao[0]][nova_posicao[1]] == "X"
+    if mapa[posicao[0]][posicao[1]] == "X"
         false
     end
     true
@@ -52,20 +54,7 @@ def joga(nome)
         heroi = encontra_jogador mapa
         mapa[heroi[0]][heroi[1]] = " "
         nova_posicao = calcula_nova_posicao heroi, direcao
-        
-        if nova_posicao[0] < 0
-            next
-        end
-        if nova_posicao[1] < 0
-            next
-        end
-        if nova_posicao[0] >= mapa.size
-            next
-        end
-        if nova_posicao[1] >= mapa[0].size
-            next
-        end
-        if mapa[nova_posicao[0]][nova_posicao[1]] == "X"
+        if !posicao_valida? mapa, nova_posicao
             next
         end
 
