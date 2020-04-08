@@ -6,6 +6,19 @@ def le_mapa(numero)
     mapa = texto.split "\n"
 end
 
+def posicao_valida? nova_posicao, mapa
+    if nova_posicao[0] < 0 || nova_posicao[0] >= mapa.size
+        false
+    end
+    if nova_posicao[1] < 0 || nova_posicao[1] >= mapa[0].size
+        false
+    end
+    if mapa[nova_posicao[0]][nova_posicao[1]] == "X"
+        false
+    end
+    true
+end
+
 def calcula_nova_posicao heroi, direcao
     case direcao
     when "W"
