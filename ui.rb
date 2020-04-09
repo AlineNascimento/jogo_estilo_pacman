@@ -17,3 +17,8 @@ def pede_movimento
     movimento.upcase
 end
 
+def game_over
+    puts "\n\n\n\n"
+    puts "Game Over! Você perdeu o Jogo"
+end
+

@@ -1,4 +1,5 @@
 require_relative 'ui'
+require_relative 'heroi'
 
 def le_mapa(numero)
     arquivo = "mapa#{numero}.txt"
@@ -22,36 +23,20 @@ def posicao_valida? mapa, posicao
     true
 end
 
-
-
-def encontra_jogador mapa
+def encontra_jogador(mapa)
     caractere_do_heroi = "H"
     mapa.each_with_index do |linha_atual, linha|
         coluna_do_heroi = linha_atual.index caractere_do_heroi
-        if coluna_do_heroi != nil
-            return [linha, coluna_do_heroi]
+        if coluna_do_heroi 
+            jogador = Heroi.new
+            jogador.linha = linha
+            jogador.coluna = coluna_do_heroi
+            return jogador
         end
     end
+    nil
 end
 
-def calcula_nova_posicao heroi, direcao
-      #nao lembro a funcionalidade
-    #Array associativo
-    movimentos = {
-        "W" => [-1,0],
-        "S" => [+1,0],
-        "D" => [0,+1],
-        "A" => [0,-1]
-    }
-    movimento = movimentos[direcao]
-    puts movimento
-    heroi[0] += movimento[0]
-    puts heroi[0]
-    heroi[1] += movimento[1]
-    puts heroi[1]
-    puts heroi
-    heroi
-end
 
 def posicoes_validas_a_partir_de mapa, novo_mapa, posicao
     posicoes = []
@@ -78,7 +63,9 @@ end
 def move_fantasma mapa, novo_mapa, linha, coluna
     posicoes = posicoes_validas_a_partir_de mapa, novo_mapa, [linha, coluna]
     return if posicoes.empty?
-    posicao = posicoes[0]
+
+    aleatoria = rand posicoes.size
+    posicao = posicoes[aleatoria]
     mapa[linha][coluna] = " "
    novo_mapa[posicao[0]][posicao[1]] = "F"
 end
@@ -102,6 +89,10 @@ def copia_mapa(mapa)
    novo_mapa = mapa.join("\n").tr("F", " ").split "\n" 
 end
 
+def jogador_perdeu? mapa
+    perdeu = !encontra_jogador(mapa)
+end
+
 def joga(nome)
     mapa =  le_mapa 2
 
@@ -109,18 +100,23 @@ def joga(nome)
         desenha mapa
         direcao = pede_movimento
         heroi = encontra_jogador mapa
-        mapa[heroi[0]][heroi[1]] = " "
-        nova_posicao = calcula_nova_posicao heroi, direcao
-        if !posicao_valida? mapa, nova_posicao
+        nova_posicao = heroi.calcula_nova_posicao direcao
+        if !posicao_valida? mapa, nova_posicao.to_array
             next
         end
 
-        mapa[heroi[0]][heroi[1]] = "H"
 
-       mapa = move_fantasmas mapa
-    #jogo aqui
+        heroi.remova_do mapa
+        nova_posicao.coloca_no mapa
+       
+        mapa = move_fantasmas mapa
+        if jogador_perdeu? mapa
+            game_over
+            break
+        end
     end
 end
+
 
 def inicia_fogefoge
     nome = da_boas_vindas
